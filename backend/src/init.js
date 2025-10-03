@@ -123,6 +123,14 @@ module.exports = () => {
         mongo.port
       }/${mongo.database}?authSource=${mongo.authenticationDatabase}`;
 
+    // Log a redacted version of the connection info for debugging on hosted environments (do not log passwords)
+    try {
+      const redacted = uri.replace(/:\/\/(.*?):(.*?)@/, '://$1:*****@');
+      console.log(`Attempting MongoDB connection: ${redacted}`.yellow);
+    } catch (e) {
+      console.log('Attempting MongoDB connection (could not redact)'.yellow);
+    }
+
     mongoose.set('strictQuery', false);
 
     mongoose
